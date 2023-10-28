@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const {StatusCodes} = require('http-status-codes');
+const hashedPassword = require('../utils/hashPassword');
 
 const changeEmail = async(req, res)=> {
     try {
@@ -28,7 +29,8 @@ const changePassword = async(req, res)=> {
         if(!user) {
             return res.status(StatusCodes.BAD_REQUEST).json({message:'User not found'});
         }
-        user.password = newPassword;
+        const hashPassword = await hashedPassword.hashPassword(newPassword);
+        user.password = hashPassword;
         await user.save();
         return res.status(StatusCodes.OK).json({message:"password updated", success:true});
 

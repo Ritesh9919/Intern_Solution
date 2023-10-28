@@ -19,8 +19,8 @@ const signup = async (req, res) => {
         .status(StatusCodes.BAD_REQUEST)
         .json({ msg: "User already exist" });
     }
-    const hashedPassword = await hashedPassword.hashPassword(password);
-    await User.create({ name, email, password: hashedPassword });
+    const hashPassword = await hashedPassword.hashPassword(password);
+    await User.create({ name, email, password: hashPassword });
     return res
       .status(StatusCodes.CREATED)
       .json({ message: "Signup Successfull!", success: true });
@@ -42,6 +42,7 @@ const login = async (req, res) => {
     }
     const user = await User.findOne({ email });
     const isPasswordMatch = await hashedPassword.comparePassword(password, user.password);
+    console.log(isPasswordMatch);
     if (!user || !isPasswordMatch) {
       return res
         .status(StatusCodes.NOT_FOUND)
